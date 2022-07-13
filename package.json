@@ -2,7 +2,7 @@
   "name": "goit-react-hw-03-image-finder",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://github.com/LarisaShatil/goit-react-hw-03-image-finder/",
+  "homepage": "https://LarisaShatil.github.io/goit-react-hw-03-image-finder/",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^12.1.4",
@@ -39,5 +39,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^4.0.0"
   }
 }

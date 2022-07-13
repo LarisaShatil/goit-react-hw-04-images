@@ -1,5 +1,4 @@
 import { Component } from "react";
-// import {TailSpin} from 'react-loader-spinner';
 
 import "../styles.css/styles.css";
 
@@ -13,7 +12,7 @@ import Loader from "./Loader/Loader";
 
 const API_KEY = "23129630-9573c017c45744d32c0b55f39";
 
-axios.defaults.baseURL = "http://pixabay.com/api/";
+axios.defaults.baseURL = "https://pixabay.com/api/";
 
 const fetchImage = (searchQuery, currentPage) => {
   return axios.get(

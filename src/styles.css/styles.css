@@ -203,3 +203,13 @@ img {
 .Button:focus {
   background-color: #de1600;
 }
+
+/*
+ * Стили компонента Loader
+ */
+ .Loader{
+  display: flex;
+  justify-content: center;
+  align-items:center; 
+  height: 100vh;
+ }

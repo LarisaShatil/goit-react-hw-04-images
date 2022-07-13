@@ -1,4 +1,5 @@
 import { Component } from "react";
+// import {TailSpin} from 'react-loader-spinner';
 
 import "../styles.css/styles.css";
 
@@ -7,8 +8,8 @@ import axios from "axios";
 import SearchBar from "./Searchbar/Searchbar";
 import ImageGallery from "./ImageGallery/ImageGallery";
 import Button from "./Button/Button";
-// import Loader from "./Loader/Loader";
 import Modal from "./Modal/Modal";
+import Loader from "./Loader/Loader";
 
 const API_KEY = "23129630-9573c017c45744d32c0b55f39";
 
@@ -18,7 +19,11 @@ const fetchImage = (searchQuery, currentPage) => {
   return axios.get(
     `/?key=${API_KEY}&q=${searchQuery}&page=${currentPage}&image_type=photo&orientation=landscape&per_page=12`
   )
-    .then(({ data }) => data.hits);
+    .then(({ data }) => data.hits)
+    .catch(err => {
+      alert("Something went wrong. Please try again!");
+      console.log(err);
+    });
 };
 
 export class App extends Component {
@@ -98,14 +103,10 @@ return (
       </>
 
     )}
-    {/* {isLoading && (
+    {isLoading && (
       <Loader
-        className="Loader"
-        type="TailSpin"
-        height={100}
-        width={100}
       />
-    )} */}
+    )}
     {modalOpen && (
       <Modal object={currentImage} onClose={this.toggleModal}>
         <img src={currentImage.largeImageURL} alt={currentImage.tags}/>

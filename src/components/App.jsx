@@ -16,28 +16,23 @@ axios.defaults.baseURL = "http://pixabay.com/api/";
 
 const fetchImage = (searchQuery, currentPage) => {
   return axios.get(
-    `/?key=${API_KEY}&q=${searchQuery}&page=${currentPage + 1}&image_type=photo&orientation=landscape&per_page=12`
+    `/?key=${API_KEY}&q=${searchQuery}&page=${currentPage}&image_type=photo&orientation=landscape&per_page=12`
   )
     .then(({ data }) => data.hits);
 };
-
-const api = {
-  fetchImage,
-}
-
 
 export class App extends Component {
   state = {
     arrayImages: [],
     searchQuery: "",
-    currentPage: 0,
+    currentPage: 1,
     isLoading: false,
     isOpen: false,
     currentImage: null,
   };
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.searchQuery !== this.state.searchQuery) {
+    if (prevState.searchQuery !== this.state.searchQuery || prevState.currentPage !== this.state.currentPage) {
       this.fetchImage();
     }
   }
@@ -45,7 +40,7 @@ export class App extends Component {
   onSubmit = (text) => {
     this.setState({
       searchQuery: text,
-      currentPage: 0,
+      currentPage: 1,
       arrayImages: [],
       isLoading: true,
     })
@@ -54,10 +49,9 @@ export class App extends Component {
   fetchImage = () => {
     const { searchQuery, currentPage } = this.state;
 
-    return api.fetchImage(searchQuery, currentPage).then((array) => {
+    return fetchImage(searchQuery, currentPage).then((array) => {
       this.setState((prevState) => ({
         arrayImages: [...prevState.arrayImages, ...array],
-        currentPage: currentPage + 1,
         isLoading: false
       }));
 
@@ -79,30 +73,27 @@ export class App extends Component {
     this.toggleModal();
   };
 
+  loadMore = () => { 
+    this.setState(prevState => ({
+      currentPage: prevState.currentPage + 1
+    }));
+  }
+
   render() {
     const {arrayImages, currentImage, isLoading, modalOpen} = this.state;
 return (
-    <div className="App"
-      style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101'
-      }}
-    >
+    <div className="App">
     <SearchBar onSubmit={this.onSubmit} />
     {arrayImages.length > 0 && (
       <>
-              <ImageGallery
+      <ImageGallery
         arrayImages={arrayImages}
         onClick={this.onModal}
         imageClick={this.onModal}
       />
       <Button 
       text = {"Load more"}
-        func={this.fetchImage}
+        func={this.loadMore}
       />
       </>
 

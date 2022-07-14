@@ -1,30 +1,13 @@
 import { Component } from "react";
 
 import "../styles.css/styles.css";
-
-import axios from "axios";
+import fetchImage from "../services/services";
 
 import SearchBar from "./Searchbar/Searchbar";
 import ImageGallery from "./ImageGallery/ImageGallery";
 import Button from "./Button/Button";
 import Modal from "./Modal/Modal";
 import Loader from "./Loader/Loader";
-
-const API_KEY = "23129630-9573c017c45744d32c0b55f39";
-
-axios.defaults.baseURL = "https://pixabay.com/api/";
-
-const fetchImage = (searchQuery, currentPage) => {
-  return axios.get(
-    `/?key=${API_KEY}&q=${searchQuery}&page=${currentPage}&image_type=photo&orientation=landscape&per_page=12`
-  )
-    .then(({ data }) => data.hits)
-    .catch(err => {
-      alert("Something went wrong. Please try again!");
-      console.log(err);
-    });
-};
-
 export class App extends Component {
   state = {
     arrayImages: [],

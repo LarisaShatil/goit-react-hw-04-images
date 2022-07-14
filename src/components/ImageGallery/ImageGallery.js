@@ -1,4 +1,4 @@
-import ImageGalleryItem from "../ImageGalleryItem/ImageGalleryItem";
+import ImageGalleryItem from "./ImageGalleryItem";
 
 const ImageGallery = ({ arrayImages, imageClick }) => {
   return (

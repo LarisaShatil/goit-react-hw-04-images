@@ -3,11 +3,12 @@ import { Component } from "react";
 import "../styles.css/styles.css";
 import fetchImage from "../services/services";
 
-import SearchBar from "./Searchbar/Searchbar";
+import SearchBar from "./SearchBar/SearchBar";
 import ImageGallery from "./ImageGallery/ImageGallery";
 import Button from "./Button/Button";
 import Modal from "./Modal/Modal";
 import Loader from "./Loader/Loader";
+
 export class App extends Component {
   state = {
     arrayImages: [],
@@ -22,6 +23,11 @@ export class App extends Component {
     if (prevState.searchQuery !== this.state.searchQuery || prevState.currentPage !== this.state.currentPage) {
       this.fetchImage();
     }
+    
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "smooth",
+    });
   }
 
   onSubmit = (text) => {
@@ -41,11 +47,6 @@ export class App extends Component {
         arrayImages: [...prevState.arrayImages, ...array],
         isLoading: false
       }));
-
-      window.scrollTo({
-        top: document.documentElement.scrollHeight,
-        behavior: "smooth",
-      });
     })
   };
 
@@ -97,5 +98,4 @@ return (
     </div>
   );
   }
-  
 };

@@ -14,6 +14,7 @@ const fetchImage = (searchQuery, currentPage) => {
         orientation: 'landscape',
         per_page: 12,
         q: searchQuery,
+        page: currentPage,
       }
     }
   )

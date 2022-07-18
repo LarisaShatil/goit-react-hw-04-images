@@ -1,4 +1,5 @@
-import { Component } from "react";
+import { useState, useEffect } from "react";
+import toast, { Toaster } from 'react-hot-toast';
 
 import "../styles.css/styles.css";
 import fetchImage from "../services/services";
@@ -9,93 +10,98 @@ import Button from "./Button/Button";
 import Modal from "./Modal/Modal";
 import Loader from "./Loader/Loader";
 
-export class App extends Component {
-  state = {
-    arrayImages: [],
-    searchQuery: "",
-    currentPage: 1,
-    isLoading: false,
-    isOpen: false,
-    currentImage: null,
-  };
+const App = () => {
+  const [arrayImages, setArrayImages] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentImage, setCurrentImage] = useState(null);
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.searchQuery !== this.state.searchQuery || prevState.currentPage !== this.state.currentPage) {
-      this.fetchImage();
+  useEffect(() => {
+    if (searchQuery === '') {
+      return;
+    } else {
+         getImages();
+
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: "smooth",
+      });
+    }   
+  }, [searchQuery, currentPage]);
+
+  useEffect(() => {
+    if (searchQuery && arrayImages.length === 0 && isLoading === false) {
+      toast.error('Try again and you will succeed!');
     }
-    
-    window.scrollTo({
-      top: document.documentElement.scrollHeight,
-      behavior: "smooth",
-    });
-  }
+  }, [searchQuery, arrayImages, isLoading]);
 
-  onSubmit = (text) => {
-    this.setState({
-      searchQuery: text,
-      currentPage: 1,
-      arrayImages: [],
-      isLoading: true,
-    })
+  const onSubmit = (text) => {
+     if (text.length === 0) {
+      toast.error('Try again and you will succeed!');
+      setSearchQuery('');
+    setCurrentPage(1);
+    setArrayImages([]);
+      return;
+    }
+
+    setSearchQuery(text);
+    setCurrentPage(1);
+    setArrayImages([]);
+    setIsLoading(true);
   };
 
-  fetchImage = () => {
-    const { searchQuery, currentPage } = this.state;
-
+  const getImages = () => {
     return fetchImage(searchQuery, currentPage).then((array) => {
-      this.setState((prevState) => ({
-        arrayImages: [...prevState.arrayImages, ...array],
-        isLoading: false
-      }));
+      setArrayImages(prev => [...prev, ...array]);
+      setIsLoading(false);
     })
   };
 
-  toggleModal = () => {
-    this.setState((prevState) => ({
-      modalOpen: !prevState.modalOpen,
-    }));
+  const toggleModal = () => {
+    setIsOpen(prev => !prev)
   };
 
-  onModal = (object) => {
-    this.setState({ currentImage: object });
-    this.toggleModal();
+  const onModal = (obj) => {
+    setCurrentImage(obj);
+    toggleModal();
   };
 
-  loadMore = () => { 
-    this.setState(prevState => ({
-      currentPage: prevState.currentPage + 1
-    }));
-  }
+  const loadMore = () => {
+    setCurrentPage(prev => prev + 1)
+  };
 
-  render() {
-    const {arrayImages, currentImage, isLoading, modalOpen} = this.state;
-return (
+
+  return (
     <div className="App">
-    <SearchBar onSubmit={this.onSubmit} />
-    {arrayImages.length > 0 && (
-      <>
-      <ImageGallery
-        arrayImages={arrayImages}
-        onClick={this.onModal}
-        imageClick={this.onModal}
-      />
-      <Button 
-      text = {"Load more"}
-        func={this.loadMore}
-      />
-      </>
+      <SearchBar onSubmit={onSubmit} />
+       <Toaster position="right top"/>
+      {arrayImages.length > 0 && (
+        <>
+          <ImageGallery
+            arrayImages={arrayImages}
+            onClick={onModal}
+            imageClick={onModal}
+          />
+          <Button
+            text={"Load more"}
+            func={loadMore}
+          />
+        </>
 
-    )}
-    {isLoading && (
-      <Loader
-      />
-    )}
-    {modalOpen && (
-      <Modal object={currentImage} onClose={this.toggleModal}>
-        <img src={currentImage.largeImageURL} alt={currentImage.tags}/>
-      </Modal>
-    )}
+      )}
+      {isLoading && (
+        <Loader
+        />
+      )}
+      {isOpen && (
+        <Modal object={currentImage} onClose={toggleModal}>
+          <img src={currentImage.largeImageURL} alt={currentImage.tags} />
+        </Modal>
+      )}
     </div>
-  );
-  }
+  )
 };
+
+export default App;
